@@ -4,7 +4,7 @@ import { RigidBody, useRapier } from "@react-three/rapier";
 import { useRef, useEffect } from "react";
 import * as THREE from "three";
 
-const MOVE_SPEED = 5;
+const MOVE_SPEED = 3;
 const JUMP_FORCE = 4;
 
 export default function Player() {

@@ -29,7 +29,7 @@ function StreetLamps() {
       
       {/* Light Source - SpotLight for atmosphere, avoiding too many PointLights */}
       <spotLight
-        position={[0.8, 3.5, 0]}
+        position={[0.8, 3.5, 0]}wwwwwwwww
         angle={0.6}
         penumbra={0.5}
         intensity={2}
@@ -43,13 +43,13 @@ function StreetLamps() {
   const lamps = [];
 
   // --- Main Horizontal Road (Z=0) ---
-  // Safe X positions (Skipping 0 for intersection and +/- 35 for driveways)
+ 
   const hRoadX = [-50, -42, -25, -15, 15, 25, 42, 50];
   hRoadX.forEach(x => {
-      // Top side (Z=-6). Arm points +X default. Rotate -PI/2 -> Points +Z (Road).
+      
       lamps.push({ pos: [x, -5, -6], rot: -Math.PI / 2 });
       
-      // Bottom side (Z=6). Arm points +X default. Rotate +PI/2 -> Points -Z (Road).
+     
       lamps.push({ pos: [x, -5, 6], rot: Math.PI / 2 });
   });
 
@@ -64,17 +64,54 @@ function StreetLamps() {
       lamps.push({ pos: [6, -5, z], rot: Math.PI });
   });
 
-  // --- Driveways ---
-  // North/South Driveways (X = +/- 35). Driveway Z length approx 16.
-  // North (Z < 0): Z range -4 to -20.
-  // South (Z > 0): Z range 4 to 20.
-  // Place one lamp halfway? Z = +/- 12.
+  // --- BIG CENTRAL LAMP Post at (0, 0) ---
+  // 4-way light at center intersection
+  // We can simulate this by placing 4 lamps at the same spot rotated differently, 
+  // or (better) create a custom BigLamp geometry. 
+  // For simplicity, let's stack 4 regular lamps slightly offset or just render manually.
   
-  // North Left (-35)
-  // Left side of driveway (X = -35 - 3 = -38). Arm points +X.
+  const CentralLamp = () => (
+    <group position={[0, -5, 0]}>
+       {/* Tall Pole */}
+       <mesh position={[0, 4, 0]} castShadow receiveShadow>
+        <cylinderGeometry args={[0.3, 0.5, 8, 8]} />
+        <meshStandardMaterial color="#2c3e50" roughness={0.5} />
+      </mesh>
+      {/* 4 Arms */}
+      {[0, Math.PI / 2, Math.PI, -Math.PI / 2].map((rot, i) => (
+        <group key={i} rotation={[0, rot, 0]}>
+            <mesh position={[0.8, 7.5, 0]} rotation={[0, 0, -Math.PI / 2]} castShadow>
+               <cylinderGeometry args={[0.1, 0.1, 2, 8]} />
+               <meshStandardMaterial color="#2c3e50" />
+            </mesh>
+            {/* Head */}
+            <mesh position={[1.8, 7.3, 0]} castShadow>
+               <coneGeometry args={[0.5, 0.6, 8]} />
+               <meshStandardMaterial color="#34495e" />
+            </mesh>
+            {/* Bulb */}
+            <mesh position={[1.8, 7.2, 0]}>
+               <sphereGeometry args={[0.25, 8, 8]} />
+               <meshStandardMaterial color="#fff" emissive="#fff" emissiveIntensity={3} />
+            </mesh>
+            <spotLight
+                position={[1.8, 7, 0]}
+                angle={0.8}
+                penumbra={0.5}
+                intensity={3}
+                distance={20}
+                color="#fff"
+                castShadow
+            />
+        </group>
+      ))}
+    </group>
+  );
+
+
+
   lamps.push({ pos: [-38, -5, -12], rot: 0 });
-  // North Right (35)
-  // Right side of driveway (X = 35 + 3 = 38). Arm points -X.
+
   lamps.push({ pos: [38, -5, -12], rot: Math.PI });
 
   // South Left (-35)
@@ -82,13 +119,6 @@ function StreetLamps() {
   // South Right (35)
   lamps.push({ pos: [38, -5, 12], rot: Math.PI });
 
-  // West/East Driveways (Z = +/- 35). X length approx 16.
-  // West (X < 0): X range -4 to -20. Mid -12.
-  // East (X > 0): X range 4 to 20. Mid 12.
-  
-  // West Top (-35)
-  // Top side of driveway (Z = -35 - 3 = -38). Arm points +Z.
-  // Rotation -PI/2.
   lamps.push({ pos: [-12, -5, -38], rot: -Math.PI / 2 });
   
   // East Top (-35)
@@ -101,6 +131,10 @@ function StreetLamps() {
           <LampPost />
         </RigidBody>
       ))}
+      {/* Render the single central lamp */}
+      <RigidBody type="fixed" colliders="trimesh">
+         <CentralLamp />
+      </RigidBody>
     </>
   );
 }

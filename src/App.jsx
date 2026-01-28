@@ -5,6 +5,9 @@ import {
   Grid,
   OrbitControls,
   KeyboardControls,
+  Sky,
+  Cloud,
+  Clouds
 } from "@react-three/drei";
 import * as THREE from "three";
 import { RigidBody, Physics } from "@react-three/rapier";
@@ -13,6 +16,7 @@ import Player from "./components/Player";
 import Trees from "./components/Trees";
 import ProceduralHouses from "./components/ProceduralHouses";
 import StreetLamps from "./components/StreetLamps";
+
 // Extend Three.js objects if needed (drei handles most)
 extend({ PointerLockControls });
 
@@ -75,10 +79,30 @@ export default function App() {
           <Trees />
           <ProceduralHouses />
           <StreetLamps />
+          
           {/* <TowerHouses/> */}
         </Physics>
         <PointerLockControls />
         {/* <OrbitControls /> */}
+        <Sky sunPosition={[125, 150, 100]} />
+        {/* Procedural Clouds scattered around the sky */}
+        <Clouds>
+          {Array.from({ length: 25 }).map((_, i) => (
+            <Cloud
+            key={i}
+            opacity={0.5}
+            speed={0.4}
+            width={10}
+            depth={1.5}
+            segments={20}
+            position={[
+              (Math.random() - 0.5) * 250, 
+              25 + Math.random() * 20,     
+              (Math.random() - 0.5) * 250  
+            ]}
+          />
+          ))}
+        </Clouds>
       </Canvas>
     </KeyboardControls>
   );
