@@ -7,103 +7,112 @@ import {
   KeyboardControls,
   Sky,
   Cloud,
-  Clouds
+  Clouds,
 } from "@react-three/drei";
 import * as THREE from "three";
 import { RigidBody, Physics } from "@react-three/rapier";
+import { Suspense } from "react";
 import Ground from "./components/Ground";
 import Player from "./components/Player";
 import Trees from "./components/Trees";
 import ProceduralHouses from "./components/ProceduralHouses";
 import StreetLamps from "./components/StreetLamps";
 
+import CustomLoader from "./components/Loader";
+
 // Extend Three.js objects if needed (drei handles most)
 extend({ PointerLockControls });
+
 
 export default function App() {
   const canvas = useRef();
   return (
-    <KeyboardControls
-      map={[
-        { name: "forward", keys: ["KeyW", "ArrowUp"] },
-        { name: "backward", keys: ["KeyS", "ArrowDown"] },
-        { name: "left", keys: ["KeyA", "ArrowLeft"] },
-        { name: "right", keys: ["KeyD", "ArrowRight"] },
-        { name: "jump", keys: ["Space"] },
-        { name: "run", keys: ["ShiftLeft"] },
-      ]}
-    >
-      <Canvas
-        ref={canvas}
-        style={{ height: "100vh", width: "100vw" }}
-        camera={{ position: [0, -1, 20], fov: 75 }}
+    <>
+      <KeyboardControls
+        map={[
+          { name: "forward", keys: ["KeyW", "ArrowUp"] },
+          { name: "backward", keys: ["KeyS", "ArrowDown"] },
+          { name: "left", keys: ["KeyA", "ArrowLeft"] },
+          { name: "right", keys: ["KeyD", "ArrowRight"] },
+          { name: "jump", keys: ["Space"] },
+          { name: "run", keys: ["ShiftLeft"] },
+        ]}
       >
-        <ambientLight intensity={0.3} />
+        <Canvas
+          ref={canvas}
+          style={{ height: "100vh", width: "100vw" }}
+          camera={{ position: [0, -1, 20], fov: 75 }}
+          shadows
+        >
+          <Suspense fallback={null}>
+            <ambientLight intensity={0.3} />
 
-        {/* Sun with glow effect */}
-        <group position={[50, 50, 25]}>
-          {/* Directional light attached to sun */}
-          <directionalLight
-            intensity={1.5}
-            castShadow
-            shadow-mapSize-width={1024}
-            shadow-mapSize-height={1024}
-            shadow-camera-far={100}
-            shadow-camera-left={-50}
-            shadow-camera-right={50}
-            shadow-camera-top={50}
-            shadow-camera-bottom={-50}
-          />
+            {/* Sun with glow effect */}
+            <group position={[50, 50, 25]}>
+              {/* Directional light attached to sun */}
+              <directionalLight
+                intensity={1.5}
+                castShadow
+                shadow-mapSize-width={1024}
+                shadow-mapSize-height={1024}
+                shadow-camera-far={100}
+                shadow-camera-left={-50}
+                shadow-camera-right={50}
+                shadow-camera-top={50}
+                shadow-camera-bottom={-50}
+              />
 
-          {/* Core sun sphere */}
-          <mesh>
-            <sphereGeometry args={[5, 32, 32]} />
-            <meshStandardMaterial
-              color="#FDB813"
-              emissive="#FDB813"
-              emissiveIntensity={2}
-            />
-          </mesh>
+              {/* Core sun sphere */}
+              <mesh>
+                <sphereGeometry args={[5, 32, 32]} />
+                <meshStandardMaterial
+                  color="#FDB813"
+                  emissive="#FDB813"
+                  emissiveIntensity={2}
+                />
+              </mesh>
 
-          {/* Outer glow halo */}
-          <mesh>
-            <sphereGeometry args={[7, 32, 32]} />
-            <meshBasicMaterial color="#FFD700" transparent opacity={0.3} />
-          </mesh>
-        </group>
+              {/* Outer glow halo */}
+              <mesh>
+                <sphereGeometry args={[7, 32, 32]} />
+                <meshBasicMaterial color="#FFD700" transparent opacity={0.3} />
+              </mesh>
+            </group>
 
-        <Physics gravity={[0, -9.81, 0]}>
-          {/* <Box position={[0, 5, 0]} /> */}
-          <Player />
-          <Ground />
-          <Trees />
-          <ProceduralHouses />
-          <StreetLamps />
-          
-          {/* <TowerHouses/> */}
-        </Physics>
-        <PointerLockControls />
-        {/* <OrbitControls /> */}
-        <Sky sunPosition={[125, 150, 100]} />
-        {/* Procedural Clouds scattered around the sky */}
-        <Clouds>
-          {Array.from({ length: 25 }).map((_, i) => (
-            <Cloud
-            key={i}
-            opacity={0.5}
-            speed={0.4}
-            width={10}
-            depth={1.5}
-            segments={20}
-            position={[
-              (Math.random() - 0.5) * 250, 
-              25 + Math.random() * 20,     
-              (Math.random() - 0.5) * 250  
-            ]}
-          />
-          ))}
-        </Clouds>
-      </Canvas>
-    </KeyboardControls>
+            <Physics gravity={[0, -9.81, 0]}>
+              {/* <Box position={[0, 5, 0]} /> */}
+              <Player />
+              <Ground />
+              <Trees />
+              <ProceduralHouses />
+              <StreetLamps />
+              {/* <TowerHouses/> */}
+            </Physics>
+            <PointerLockControls />
+            {/* <OrbitControls /> */}
+            <Sky sunPosition={[125, 150, 100]} />
+            {/* Procedural Clouds scattered around the sky */}
+            <Clouds>
+              {Array.from({ length: 25 }).map((_, i) => (
+                <Cloud
+                  key={i}
+                  opacity={0.5}
+                  speed={0.4}
+                  width={10}
+                  depth={1.5}
+                  segments={20}
+                  position={[
+                    (Math.random() - 0.5) * 250,
+                    25 + Math.random() * 20,
+                    (Math.random() - 0.5) * 250
+                  ]}
+                />
+              ))}
+            </Clouds>
+          </Suspense>
+        </Canvas>
+      </KeyboardControls>
+      <CustomLoader />
+    </>
   );
 }

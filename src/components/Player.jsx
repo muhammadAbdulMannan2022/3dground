@@ -17,7 +17,7 @@ export default function Player() {
 
     const { forward, backward, left, right, jump, run } = getKeys();
 
-    const speed = run ? MOVE_SPEED * 1.5 : MOVE_SPEED;
+    const speed = run ? MOVE_SPEED  : MOVE_SPEED* 1.5;
 
     // Get camera directions
     const frontVector = new THREE.Vector3(
