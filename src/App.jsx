@@ -19,10 +19,10 @@ import ProceduralHouses from "./components/ProceduralHouses";
 import StreetLamps from "./components/StreetLamps";
 
 import CustomLoader from "./components/Loader";
+import Footboll from "./components/Footboll";
 
 // Extend Three.js objects if needed (drei handles most)
 extend({ PointerLockControls });
-
 
 export default function App() {
   const canvas = useRef();
@@ -91,6 +91,8 @@ export default function App() {
             <PointerLockControls />
             {/* <OrbitControls /> */}
             <Sky sunPosition={[125, 150, 100]} />
+            {/* item */}
+            <Footboll />
             {/* Procedural Clouds scattered around the sky */}
             <Clouds>
               {Array.from({ length: 25 }).map((_, i) => (
@@ -104,7 +106,7 @@ export default function App() {
                   position={[
                     (Math.random() - 0.5) * 250,
                     25 + Math.random() * 20,
-                    (Math.random() - 0.5) * 250
+                    (Math.random() - 0.5) * 250,
                   ]}
                 />
               ))}
