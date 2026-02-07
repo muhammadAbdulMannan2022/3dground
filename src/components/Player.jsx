@@ -187,7 +187,7 @@ export default function Player() {
         camera.getWorldDirection(direction);
 
         // Place block at a reasonable distance in front
-        const placeDistance = 3;
+        const placeDistance = 7;
         const rawPosition = new THREE.Vector3(
           camera.position.x + direction.x * placeDistance,
           camera.position.y + direction.y * placeDistance,
