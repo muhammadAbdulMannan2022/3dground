@@ -103,7 +103,7 @@ function FieldLines() {
 
       {/* Center circle */}
       <mesh position={[cx, y, cz]} rotation={[-Math.PI / 2, 0, 0]}>
-        <ringGeometry args={[2, 2.2, 32]} />
+        <ringGeometry args={[1.5, 1.7, 32]} />
         <meshStandardMaterial color="white" />
       </mesh>
       <mesh position={[cx, y, cz]} rotation={[-Math.PI / 2, 0, 0]}>
